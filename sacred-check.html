@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Block Sacred TX Demo</title>
+  <script src="https://cdn.jsdelivr.net/npm/franc@6.1.0/min/franc.min.js"></script>
   <style>
     body {
       font-family: sans-serif;
@@ -43,16 +44,35 @@
         /om/i,
         /divine/i,
         /sacred/i,
-        /hymn/i
+        /hymn/i,
+        /holy/i,
+        /bible/i,
+        /scripture/i,
+        /psalm/i
       ];
 
+      const sacredCombos = [
+        ["healing", "chant"],
+        ["holy", "text"],
+        ["sacred", "music"],
+        ["spiritual", "chant"],
+        ["divine", "language"]
+      ];
+
+      const sacredLanguages = ["arb", "heb", "san", "lat"];
+
       const input = document.getElementById("txInput").value;
+      const inputLower = input.toLowerCase();
       const resultDiv = document.getElementById("result");
 
-      const isBlocked = sacredTerms.some(term => term.test(input));
+      const isTermBlocked = sacredTerms.some(term => term.test(inputLower));
+      const isComboBlocked = sacredCombos.some(combo => combo.every(word => inputLower.includes(word)));
 
-      if (isBlocked) {
-        resultDiv.textContent = "🚫 Transaction Rejected: Contains sacred content.";
+      const detectedLang = franc(input);
+      const isLanguageBlocked = sacredLanguages.includes(detectedLang);
+
+      if (isTermBlocked || isComboBlocked || isLanguageBlocked) {
+        resultDiv.textContent = `🚫 Transaction Rejected: Contains sacred content${isLanguageBlocked ? ' (Language Detected: ' + detectedLang + ')' : ''}.`;
         resultDiv.style.color = "red";
       } else {
         resultDiv.textContent = "✅ Transaction Accepted: No sacred content found.";
