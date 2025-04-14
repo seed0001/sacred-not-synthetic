@@ -62,7 +62,27 @@
         /anointed/i,
         /savior/i,
         /saviour/i,
-        /redeemer/i
+        /redeemer/i,
+        /bless/i,
+        /blessed/i,
+        /blessing/i,
+        /worship/i,
+        /faith/i,
+        /glory/i,
+        /curse/i,
+        /cursed/i,
+        /hex/i,
+        /spell/i,
+        /spells/i,
+        /sorcery/i,
+        /witch/i,
+        /witchcraft/i,
+        /poison/i,
+        /damned/i,
+        /demon/i,
+        /devil/i,
+        /satan/i,
+        /evil/i
       ];
 
       const sacredCombos = [
@@ -81,10 +101,10 @@
       const isComboBlocked = sacredCombos.some(combo => combo.every(word => inputLower.includes(word)));
 
       if (isTermBlocked || isComboBlocked) {
-        resultDiv.textContent = "🚫 Transaction Rejected: Contains sacred content.";
+        resultDiv.textContent = "🚫 Transaction Rejected: Contains sacred or harmful content.";
         resultDiv.style.color = "red";
       } else {
-        resultDiv.textContent = "✅ Transaction Accepted: No sacred content found.";
+        resultDiv.textContent = "✅ Transaction Accepted: No sacred or harmful content found.";
         resultDiv.style.color = "lightgreen";
       }
     }
