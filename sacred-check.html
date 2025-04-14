@@ -91,15 +91,15 @@
       const inputLower = input.toLowerCase();
       const resultDiv = document.getElementById("result");
 
-      const isPositive = positiveTerms.some(term => term.test(inputLower));
-      const isNegative = negativeTerms.some(term => term.test(inputLower));
-      const isComboBlocked = sacredCombos.some(combo => combo.every(word => inputLower.includes(word)));
+      const matchedPositives = positiveRaw.filter(term => inputLower.match(toWordBoundary(term)));
+      const matchedNegatives = negativeRaw.filter(term => inputLower.match(toWordBoundary(term)));
+      const matchedCombos = sacredCombos.filter(combo => combo.every(word => inputLower.includes(word)));
 
-      if (isNegative || isComboBlocked) {
-        resultDiv.textContent = "⚠️ Evil Tag Created: Potentially harmful or negative content detected.";
+      if (matchedNegatives.length > 0 || matchedCombos.length > 0) {
+        resultDiv.innerHTML = `⚠️ Evil Tag Created: Potentially harmful content detected.<br><strong>Matches:</strong> ${[...matchedNegatives, ...matchedCombos.map(c => c.join(" + "))].join(", ")}`;
         resultDiv.style.color = "red";
-      } else if (isPositive) {
-        resultDiv.textContent = "✨ Sacred Tag Created: Potentially spiritual or divine content detected.";
+      } else if (matchedPositives.length > 0) {
+        resultDiv.innerHTML = `✨ Sacred Tag Created: Potentially spiritual content detected.<br><strong>Matches:</strong> ${matchedPositives.join(", ")}`;
         resultDiv.style.color = "gold";
       } else {
         resultDiv.textContent = "✅ Neutral Tag Created: No flagged content detected.";
