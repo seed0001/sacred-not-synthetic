@@ -83,7 +83,10 @@
       const isTermBlocked = sacredTerms.some(term => term.test(inputLower));
       const isComboBlocked = sacredCombos.some(combo => combo.every(word => inputLower.includes(word)));
 
-      const detectedLang = franc(input);
+      let detectedLang = 'und';
+      if (input.length > 4) {
+        detectedLang = franc(input);
+      }
       const isLanguageBlocked = sacredLanguages.includes(detectedLang);
 
       if (isTermBlocked || isComboBlocked || isLanguageBlocked) {
