@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Block Sacred TX Demo</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      background: #111;
+      color: #eee;
+    }
+    input, button {
+      padding: 0.5rem;
+      font-size: 1rem;
+      margin-top: 1rem;
+      width: 100%;
+    }
+    .result {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Block Sacred Transaction Checker</h1>
+  <p>Enter a simulated transaction metadata string. This tool checks for sacred content and applies the "block_sacred" rule.</p>
+
+  <input type="text" id="txInput" placeholder="Paste your fake transaction metadata here...">
+  <button onclick="checkTransaction()">Check Transaction</button>
+  <div class="result" id="result"></div>
+
+  <script>
+    function checkTransaction() {
+      const sacredTerms = [
+        /prayer/i,
+        /chant/i,
+        /hallelujah/i,
+        /amen/i,
+        /shanti/i,
+        /bismillah/i,
+        /om/i,
+        /divine/i,
+        /sacred/i,
+        /hymn/i
+      ];
+
+      const input = document.getElementById("txInput").value;
+      const resultDiv = document.getElementById("result");
+
+      const isBlocked = sacredTerms.some(term => term.test(input));
+
+      if (isBlocked) {
+        resultDiv.textContent = "🚫 Transaction Rejected: Contains sacred content.";
+        resultDiv.style.color = "red";
+      } else {
+        resultDiv.textContent = "✅ Transaction Accepted: No sacred content found.";
+        resultDiv.style.color = "lightgreen";
+      }
+    }
+  </script>
+</body>
+</html>
