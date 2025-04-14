@@ -84,7 +84,7 @@
       const isComboBlocked = sacredCombos.some(combo => combo.every(word => inputLower.includes(word)));
 
       let detectedLang = 'und';
-      if (input.length > 4) {
+      if (input.length > 20) {
         detectedLang = franc(input);
       }
       const isLanguageBlocked = sacredLanguages.includes(detectedLang);
