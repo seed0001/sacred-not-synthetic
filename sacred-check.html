@@ -24,8 +24,8 @@
   </style>
 </head>
 <body>
-  <h1>Flag Sacred Transaction</h1>
-  <p>Enter a simulated transaction metadata string. This tool checks for sacred content and applies the "Sacred Flag" rule.</p>
+  <h1>Block Sacred Transaction Checker</h1>
+  <p>Enter a simulated transaction metadata string. This tool flags potential sacred or harmful content for human review. It does not enforce blockchain-level rejection.</p>
 
   <input type="text" id="txInput" placeholder="Paste your fake transaction metadata here...">
   <button onclick="checkTransaction()">Check Transaction</button>
@@ -33,13 +33,13 @@
 
   <script>
     function checkTransaction() {
-      const sacredTerms = [
-        /prayer/i, /chant/i, /hallelujah/i, /amen/i, /shanti/i, /bismillah/i, /om/i, /divine/i, /sacred/i,
-        /hymn/i, /holy/i, /bible/i, /scripture/i, /psalm/i, /god/i, /goddess/i, /lord/i, /allah/i, /yahweh/i,
+      const positiveTerms = [
+        /prayer/i, /hallelujah/i, /amen/i, /shanti/i, /bismillah/i, /om/i, /divine/i, /sacred/i, /hymn/i,
+        /holy/i, /bible/i, /scripture/i, /psalm/i, /god/i, /goddess/i, /lord/i, /allah/i, /yahweh/i,
         /elohim/i, /creator/i, /messiah/i, /prophet/i, /scriptural/i, /divinity/i, /anointed/i, /savior/i,
         /saviour/i, /redeemer/i, /bless/i, /blessed/i, /blessing/i, /worship/i, /faith/i, /glory/i,
         /sacraments?/i, /consecrated/i, /revered/i, /venerated/i, /pure/i, /righteous/i, /saintly/i, /godly/i,
-        /virtuous/i, /immaculate/i, /sinless/i, /spiritual/i, /godly/i, /celestial/i, /heavenly/i, /supernatural/i,
+        /virtuous/i, /immaculate/i, /sinless/i, /spiritual/i, /celestial/i, /heavenly/i, /supernatural/i,
         /transcendent/i, /exalted/i, /sublime/i, /angelic/i, /seraphic/i, /cherubic/i, /deific/i, /deified/i,
         /omnipotent/i, /omniscient/i, /omnipresent/i, /eternal/i, /infinite/i, /deity/i, /almighty/i, /jehovah/i,
         /adonai/i, /supreme being/i, /higher power/i, /providence/i, /sovereign/i, /master/i, /architect/i,
@@ -48,28 +48,26 @@
         /disciple/i, /martyr/i, /paradise/i, /heaven/i, /nirvana/i, /enlightenment/i, /salvation/i, /grace/i,
         /mercy/i, /benevolence/i, /compassion/i, /love/i, /light/i, /radiance/i, /aura/i, /halo/i,
         /sanctity/i, /piety/i, /devotion/i, /hope/i, /charity/i, /virtue/i, /miracle/i, /covenant/i,
-        /kingdom/i, /zion/i, /eden/i,
+        /kingdom/i, /zion/i, /eden/i
+      ];
 
+      const negativeTerms = [
         /evil/i, /wicked/i, /malevolent/i, /sinister/i, /malicious/i, /vile/i, /nefarious/i, /depraved/i,
         /corrupt/i, /immoral/i, /heinous/i, /atrocious/i, /diabolical/i, /fiendish/i, /demonic/i, /infernal/i,
         /villainous/i, /cruel/i, /sadistic/i, /barbarous/i, /monstrous/i, /toxic/i, /harmful/i, /destructive/i,
-        /baneful/i, /pernicious/i,
-
-        /curse/i, /cursed/i, /hex/i, /jinx/i, /spell/i, /spells/i, /malediction/i, /damnation/i, /anathema/i,
-        /blight/i, /scourge/i, /plague/i, /affliction/i, /bane/i, /doom/i, /condemnation/i, /execration/i,
-        /oath/i, /voodoo/i, /witchcraft/i, /sorcery/i, /black magic/i, /enchantment/i, /hoodoo/i,
-        /profanity/i, /obscenity/i,
-
-        /devil/i, /satan/i, /lucifer/i, /beelzebub/i, /mephistopheles/i, /antichrist/i, /demon/i, /fiend/i,
-        /imp/i, /goblin/i, /ghoul/i, /spectre/i, /wraith/i, /incubus/i, /succubus/i, /hellion/i,
-        /adversary/i, /tempter/i, /prince of darkness/i, /fallen angel/i, /serpent/i, /beast/i, /dragon/i,
-        /leviathan/i, /belial/i, /asmodeus/i, /mammon/i, /baphomet/i, /moloch/i, /dagon/i,
-
-        /hell/i, /underworld/i, /abyss/i, /perdition/i, /inferno/i, /purgatory/i, /torment/i, /suffering/i,
-        /agony/i, /despair/i, /darkness/i, /shadow/i, /corruption/i, /sin/i, /vice/i, /temptation/i,
-        /debauchery/i, /perversion/i, /betrayal/i, /treachery/i, /deceit/i, /lie/i, /blasphemy/i,
-        /sacrilege/i, /heresy/i, /apostasy/i, /possession/i, /exorcism/i, /occult/i, /necromancy/i,
-        /ritual/i, /blood magic/i, /chaos/i, /anarchy/i, /destruction/i, /apocalypse/i, /armageddon/i
+        /baneful/i, /pernicious/i, /curse/i, /cursed/i, /hex/i, /jinx/i, /spell/i, /spells/i, /malediction/i,
+        /damnation/i, /anathema/i, /blight/i, /scourge/i, /plague/i, /affliction/i, /bane/i, /doom/i,
+        /condemnation/i, /execration/i, /oath/i, /voodoo/i, /witchcraft/i, /sorcery/i, /black magic/i,
+        /enchantment/i, /hoodoo/i, /profanity/i, /obscenity/i, /devil/i, /satan/i, /lucifer/i, /beelzebub/i,
+        /mephistopheles/i, /antichrist/i, /demon/i, /fiend/i, /imp/i, /goblin/i, /ghoul/i, /spectre/i,
+        /wraith/i, /incubus/i, /succubus/i, /hellion/i, /adversary/i, /tempter/i, /prince of darkness/i,
+        /fallen angel/i, /serpent/i, /beast/i, /dragon/i, /leviathan/i, /belial/i, /asmodeus/i, /mammon/i,
+        /baphomet/i, /moloch/i, /dagon/i, /hell/i, /underworld/i, /abyss/i, /perdition/i, /inferno/i,
+        /purgatory/i, /torment/i, /suffering/i, /agony/i, /despair/i, /darkness/i, /shadow/i, /corruption/i,
+        /sin/i, /vice/i, /temptation/i, /debauchery/i, /perversion/i, /betrayal/i, /treachery/i, /deceit/i,
+        /lie/i, /blasphemy/i, /sacrilege/i, /heresy/i, /apostasy/i, /possession/i, /exorcism/i, /occult/i,
+        /necromancy/i, /ritual/i, /blood magic/i, /chaos/i, /anarchy/i, /destruction/i, /apocalypse/i,
+        /armageddon/i
       ];
 
       const sacredCombos = [
@@ -84,14 +82,18 @@
       const inputLower = input.toLowerCase();
       const resultDiv = document.getElementById("result");
 
-      const isTermBlocked = sacredTerms.some(term => term.test(inputLower));
+      const isPositive = positiveTerms.some(term => term.test(inputLower));
+      const isNegative = negativeTerms.some(term => term.test(inputLower));
       const isComboBlocked = sacredCombos.some(combo => combo.every(word => inputLower.includes(word)));
 
-      if (isTermBlocked || isComboBlocked) {
-        resultDiv.textContent = "🚫 Transaction Rejected: Contains sacred or harmful content.";
+      if (isNegative || isComboBlocked) {
+        resultDiv.textContent = "⚠️ Evil Tag Created: Potentially harmful or negative content detected.";
         resultDiv.style.color = "red";
+      } else if (isPositive) {
+        resultDiv.textContent = "✨ Sacred Tag Created: Potentially spiritual or divine content detected.";
+        resultDiv.style.color = "gold";
       } else {
-        resultDiv.textContent = "✅ Transaction Accepted: No sacred or harmful content found.";
+        resultDiv.textContent = "✅ Neutral Tag Created: No flagged content detected.";
         resultDiv.style.color = "lightgreen";
       }
     }
