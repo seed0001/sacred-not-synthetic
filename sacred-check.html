@@ -32,43 +32,52 @@
   <div class="result" id="result"></div>
 
   <script>
+    function toWordBoundary(term) {
+      return new RegExp(`\\b${term}\\b`, 'i');
+    }
+
+    const makePatternList = terms => terms.map(toWordBoundary);
+
     function checkTransaction() {
-      const positiveTerms = [
-        /prayer/i, /hallelujah/i, /amen/i, /shanti/i, /bismillah/i, /om/i, /divine/i, /sacred/i, /hymn/i,
-        /holy/i, /bible/i, /scripture/i, /psalm/i, /god/i, /goddess/i, /lord/i, /allah/i, /yahweh/i,
-        /elohim/i, /creator/i, /messiah/i, /prophet/i, /scriptural/i, /divinity/i, /anointed/i, /savior/i,
-        /saviour/i, /redeemer/i, /bless/i, /blessed/i, /blessing/i, /worship/i, /faith/i, /glory/i,
-        /sacraments?/i, /consecrated/i, /revered/i, /venerated/i, /pure/i, /righteous/i, /saintly/i, /godly/i,
-        /virtuous/i, /immaculate/i, /sinless/i, /spiritual/i, /celestial/i, /heavenly/i, /supernatural/i,
-        /transcendent/i, /exalted/i, /sublime/i, /angelic/i, /seraphic/i, /cherubic/i, /deific/i, /deified/i,
-        /omnipotent/i, /omniscient/i, /omnipresent/i, /eternal/i, /infinite/i, /deity/i, /almighty/i, /jehovah/i,
-        /adonai/i, /supreme being/i, /higher power/i, /providence/i, /sovereign/i, /master/i, /architect/i,
-        /father/i, /christ/i, /jesus/i, /krishna/i, /brahma/i, /vishnu/i, /shiva/i, /ganesha/i, /spirit/i,
-        /holy spirit/i, /trinity/i, /monad/i, /theos/i, /logos/i, /angel/i, /archangel/i, /saint/i, /apostle/i,
-        /disciple/i, /martyr/i, /paradise/i, /heaven/i, /nirvana/i, /enlightenment/i, /salvation/i, /grace/i,
-        /mercy/i, /benevolence/i, /compassion/i, /love/i, /light/i, /radiance/i, /aura/i, /halo/i,
-        /sanctity/i, /piety/i, /devotion/i, /hope/i, /charity/i, /virtue/i, /miracle/i, /covenant/i,
-        /kingdom/i, /zion/i, /eden/i
+      const positiveRaw = [
+        "prayer", "hallelujah", "amen", "shanti", "bismillah", "om", "divine", "sacred", "hymn",
+        "holy", "bible", "scripture", "psalm", "god", "goddess", "lord", "allah", "yahweh",
+        "elohim", "creator", "messiah", "prophet", "scriptural", "divinity", "anointed", "savior",
+        "saviour", "redeemer", "bless", "blessed", "blessing", "worship", "faith", "glory",
+        "sacrament", "consecrated", "revered", "venerated", "pure", "righteous", "saintly", "godly",
+        "virtuous", "immaculate", "sinless", "spiritual", "celestial", "heavenly", "supernatural",
+        "transcendent", "exalted", "sublime", "angelic", "seraphic", "cherubic", "deific", "deified",
+        "omnipotent", "omniscient", "omnipresent", "eternal", "infinite", "deity", "almighty", "jehovah",
+        "adonai", "supreme being", "higher power", "providence", "sovereign", "master", "architect",
+        "father", "christ", "jesus", "krishna", "brahma", "vishnu", "shiva", "ganesha", "spirit",
+        "holy spirit", "trinity", "monad", "theos", "logos", "angel", "archangel", "saint", "apostle",
+        "disciple", "martyr", "paradise", "heaven", "nirvana", "enlightenment", "salvation", "grace",
+        "mercy", "benevolence", "compassion", "love", "light", "radiance", "aura", "halo",
+        "sanctity", "piety", "devotion", "hope", "charity", "virtue", "miracle", "covenant",
+        "kingdom", "zion", "eden"
       ];
 
-      const negativeTerms = [
-        /evil/i, /wicked/i, /malevolent/i, /sinister/i, /malicious/i, /vile/i, /nefarious/i, /depraved/i,
-        /corrupt/i, /immoral/i, /heinous/i, /atrocious/i, /diabolical/i, /fiendish/i, /demonic/i, /infernal/i,
-        /villainous/i, /cruel/i, /sadistic/i, /barbarous/i, /monstrous/i, /toxic/i, /harmful/i, /destructive/i,
-        /baneful/i, /pernicious/i, /curse/i, /cursed/i, /hex/i, /jinx/i, /spell/i, /spells/i, /malediction/i,
-        /damnation/i, /anathema/i, /blight/i, /scourge/i, /plague/i, /affliction/i, /bane/i, /doom/i,
-        /condemnation/i, /execration/i, /oath/i, /voodoo/i, /witchcraft/i, /sorcery/i, /black magic/i,
-        /enchantment/i, /hoodoo/i, /profanity/i, /obscenity/i, /devil/i, /satan/i, /lucifer/i, /beelzebub/i,
-        /mephistopheles/i, /antichrist/i, /demon/i, /fiend/i, /imp/i, /goblin/i, /ghoul/i, /spectre/i,
-        /wraith/i, /incubus/i, /succubus/i, /hellion/i, /adversary/i, /tempter/i, /prince of darkness/i,
-        /fallen angel/i, /serpent/i, /beast/i, /dragon/i, /leviathan/i, /belial/i, /asmodeus/i, /mammon/i,
-        /baphomet/i, /moloch/i, /dagon/i, /hell/i, /underworld/i, /abyss/i, /perdition/i, /inferno/i,
-        /purgatory/i, /torment/i, /suffering/i, /agony/i, /despair/i, /darkness/i, /shadow/i, /corruption/i,
-        /sin/i, /vice/i, /temptation/i, /debauchery/i, /perversion/i, /betrayal/i, /treachery/i, /deceit/i,
-        /lie/i, /blasphemy/i, /sacrilege/i, /heresy/i, /apostasy/i, /possession/i, /exorcism/i, /occult/i,
-        /necromancy/i, /ritual/i, /blood magic/i, /chaos/i, /anarchy/i, /destruction/i, /apocalypse/i,
-        /armageddon/i
+      const negativeRaw = [
+        "evil", "wicked", "malevolent", "sinister", "malicious", "vile", "nefarious", "depraved",
+        "corrupt", "immoral", "heinous", "atrocious", "diabolical", "fiendish", "demonic", "infernal",
+        "villainous", "cruel", "sadistic", "barbarous", "monstrous", "toxic", "harmful", "destructive",
+        "baneful", "pernicious", "curse", "cursed", "hex", "jinx", "spell", "spells", "malediction",
+        "damnation", "anathema", "blight", "scourge", "plague", "affliction", "bane", "doom",
+        "condemnation", "execration", "oath", "voodoo", "witchcraft", "sorcery", "black magic",
+        "enchantment", "hoodoo", "profanity", "obscenity", "devil", "satan", "lucifer", "beelzebub",
+        "mephistopheles", "antichrist", "demon", "fiend", "imp", "goblin", "ghoul", "spectre",
+        "wraith", "incubus", "succubus", "hellion", "adversary", "tempter", "prince of darkness",
+        "fallen angel", "serpent", "beast", "dragon", "leviathan", "belial", "asmodeus", "mammon",
+        "baphomet", "moloch", "dagon", "hell", "underworld", "abyss", "perdition", "inferno",
+        "purgatory", "torment", "suffering", "agony", "despair", "darkness", "shadow", "corruption",
+        "sin", "vice", "temptation", "debauchery", "perversion", "betrayal", "treachery", "deceit",
+        "lie", "blasphemy", "sacrilege", "heresy", "apostasy", "possession", "exorcism", "occult",
+        "necromancy", "ritual", "blood magic", "chaos", "anarchy", "destruction", "apocalypse",
+        "armageddon"
       ];
+
+      const positiveTerms = makePatternList(positiveRaw);
+      const negativeTerms = makePatternList(negativeRaw);
 
       const sacredCombos = [
         ["healing", "chant"],
