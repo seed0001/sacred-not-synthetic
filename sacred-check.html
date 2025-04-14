@@ -79,12 +79,18 @@
       const positiveTerms = makePatternList(positiveRaw);
       const negativeTerms = makePatternList(negativeRaw);
 
-      const sacredCombos = [
+      const positiveCombos = [
         ["healing", "chant"],
         ["holy", "text"],
         ["sacred", "music"],
         ["spiritual", "chant"],
         ["divine", "language"]
+      ];
+
+      const negativeCombos = [
+        ["blood", "ritual"],
+        ["dark", "power"],
+        ["black", "magic"]
       ];
 
       const input = document.getElementById("txInput").value;
@@ -93,13 +99,14 @@
 
       const matchedPositives = positiveRaw.filter(term => inputLower.match(toWordBoundary(term)));
       const matchedNegatives = negativeRaw.filter(term => inputLower.match(toWordBoundary(term)));
-      const matchedCombos = sacredCombos.filter(combo => combo.every(word => inputLower.includes(word)));
+      const matchedPositiveCombos = positiveCombos.filter(combo => combo.every(word => inputLower.includes(word)));
+      const matchedNegativeCombos = negativeCombos.filter(combo => combo.every(word => inputLower.includes(word)));
 
-      if (matchedNegatives.length > 0 || matchedCombos.length > 0) {
-        resultDiv.innerHTML = `⚠️ Evil Tag Created: Potentially harmful content detected.<br><strong>Matches:</strong> ${[...matchedNegatives, ...matchedCombos.map(c => c.join(" + "))].join(", ")}`;
+      if (matchedNegatives.length > 0 || matchedNegativeCombos.length > 0) {
+        resultDiv.innerHTML = `⚠️ Evil Tag Created: Potentially harmful content detected.<br><strong>Matches:</strong> ${[...matchedNegatives, ...matchedNegativeCombos.map(c => c.join(" + "))].join(", ")}`;
         resultDiv.style.color = "red";
-      } else if (matchedPositives.length > 0) {
-        resultDiv.innerHTML = `✨ Sacred Tag Created: Potentially spiritual content detected.<br><strong>Matches:</strong> ${matchedPositives.join(", ")}`;
+      } else if (matchedPositives.length > 0 || matchedPositiveCombos.length > 0) {
+        resultDiv.innerHTML = `✨ Sacred Tag Created: Potentially spiritual content detected.<br><strong>Matches:</strong> ${[...matchedPositives, ...matchedPositiveCombos.map(c => c.join(" + "))].join(", ")}`;
         resultDiv.style.color = "gold";
       } else {
         resultDiv.textContent = "✅ Neutral Tag Created: No flagged content detected.";
